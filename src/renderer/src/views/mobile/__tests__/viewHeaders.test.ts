@@ -7,11 +7,15 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { i18n } from '@/i18n'
 import { useLibraryStore } from '@/stores/library'
+import MobileExploreView from '../MobileExploreView.vue'
+import MobileGenreDetailView from '../MobileGenreDetailView.vue'
 import MobileLibraryView from '../MobileLibraryView.vue'
 import MobileMoreView from '../MobileMoreView.vue'
 import MobilePartyView from '../MobilePartyView.vue'
 import MobilePlaylistsView from '../MobilePlaylistsView.vue'
 import MobileQueueView from '../MobileQueueView.vue'
+import MobileSearchView from '../MobileSearchView.vue'
+import MobileYourLibraryView from '../MobileYourLibraryView.vue'
 import MobileRadioView from '../MobileRadioView.vue'
 
 const vuetify = createVuetify({ components, directives })
@@ -22,6 +26,10 @@ const router = createRouter({
 })
 
 const VIEWS = [
+  { name: 'MobileSearchView', component: MobileSearchView },
+  { name: 'MobileExploreView', component: MobileExploreView },
+  { name: 'MobileYourLibraryView', component: MobileYourLibraryView },
+  { name: 'MobileGenreDetailView', component: MobileGenreDetailView },
   { name: 'MobileLibraryView', component: MobileLibraryView },
   { name: 'MobilePlaylistsView', component: MobilePlaylistsView },
   { name: 'MobileQueueView', component: MobileQueueView },
@@ -34,12 +42,22 @@ function mountView(component: (typeof VIEWS)[number]['component']) {
   const library = useLibraryStore()
   vi.spyOn(library, 'fetchAllSongs').mockResolvedValue()
   vi.spyOn(library, 'fetchAlbums').mockResolvedValue()
+  vi.spyOn(library, 'fetchArtists').mockResolvedValue()
+  vi.spyOn(library, 'fetchGenres').mockResolvedValue()
   vi.spyOn(library, 'fetchPlaylists').mockResolvedValue()
+  vi.spyOn(library, 'fetchStarred').mockResolvedValue()
   vi.spyOn(library, 'fetchRadioStations').mockResolvedValue()
+  vi.spyOn(library, 'fetchRecentlyPlayedAlbums').mockResolvedValue([])
+  vi.spyOn(library, 'fetchFrequentAlbums').mockResolvedValue([])
+  vi.spyOn(library, 'fetchSongsByGenre').mockResolvedValue([])
+  vi.spyOn(library, 'search').mockResolvedValue()
+  vi.spyOn(library, 'client').mockReturnValue({
+    getAlbumList2: vi.fn().mockResolvedValue([]),
+  } as unknown as ReturnType<typeof library.client>)
   return mount(component as never, {
     global: {
       plugins: [vuetify, i18n, router],
-      stubs: { CoverArt: true, TileContextMenu: true },
+      stubs: { CoverArt: true, TileContextMenu: true, CreatePlaylistDialog: true },
     },
   })
 }

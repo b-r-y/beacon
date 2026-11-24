@@ -56,6 +56,18 @@ describe('MobileRadioRow', () => {
     expect(mountRow().find('.radio-row__menu').exists()).toBe(true)
   })
 
+  it('can omit the editor in a read-only result list without losing playback', async () => {
+    useAuthStore().$patch({ serverType: 'jellyfin', isAdmin: false })
+    const wrapper = mount(MobileRadioRow, {
+      props: { station: makeStation(), showMenu: false },
+      global: { plugins: [vuetify, i18n], stubs: { CoverArt: true, TileContextMenu: true } },
+    })
+
+    expect(wrapper.find('.radio-row__menu').exists()).toBe(false)
+    await wrapper.get('.radio-row').trigger('click')
+    expect(wrapper.emitted('play')?.[0]?.[0]).toMatchObject({ id: 'r1' })
+  })
+
   it('plays the station when the row is tapped', async () => {
     const wrapper = mountRow()
 

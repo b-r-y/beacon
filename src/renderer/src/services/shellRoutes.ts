@@ -7,12 +7,12 @@ import type { RouteLocationNormalizedLoaded, RouteLocationRaw } from 'vue-router
  * which brings its own transport controls, sat in the desktop shell above
  * the desktop's player bar: two of them.
  *
- * `queueDrawer` is set for the phone's Queue tab, which has no page of its
+ * `queueDrawer` is set for the phone's Queue page, which has no page of its
  * own on the desktop - the queue is a drawer there.
  *
  * Null for a page that stays where it is: one already in the right shell,
- * and the desktop pages with no phone design (artists, genres, search,
- * stats, settings), which the phone shell shows as they are. */
+ * and the desktop pages with no phone design (artists, genres, stats,
+ * settings), which the phone shell shows as they are. */
 export function routeInOtherShell(
   route: Pick<RouteLocationNormalizedLoaded, 'name' | 'params' | 'query'>,
   mobile: boolean,
@@ -22,6 +22,8 @@ export function routeInOtherShell(
     switch (route.name) {
       case 'home':
         return { to: { name: 'm-home' } }
+      case 'search':
+        return { to: { name: 'm-search', query: route.query } }
       case 'now-playing':
         return { to: { name: 'm-now-playing' } }
       case 'playlists':
@@ -34,6 +36,8 @@ export function routeInOtherShell(
         return { to: { name: 'm-library', query: { tab: 'albums' } } }
       case 'album-detail':
         return { to: { name: 'm-album-detail', params: { id } } }
+      case 'genre-detail':
+        return { to: { name: 'm-genre-detail', params: { name: route.params.name } } }
       case 'favorites':
         return { to: { name: 'm-library', query: { favorites: '1' } } }
       case 'radio':
@@ -45,6 +49,12 @@ export function routeInOtherShell(
   switch (route.name) {
     case 'm-home':
       return { to: { name: 'home' } }
+    case 'm-search':
+      return { to: { name: 'search', query: route.query } }
+    case 'm-explore':
+      return { to: { name: 'home' } }
+    case 'm-your-library':
+      return { to: { name: 'songs' } }
     case 'm-now-playing':
       return { to: { name: 'now-playing' } }
     case 'm-queue':
@@ -58,6 +68,8 @@ export function routeInOtherShell(
       return { to: { name: route.query.tab === 'albums' ? 'albums' : 'songs' } }
     case 'm-album-detail':
       return { to: { name: 'album-detail', params: { id } } }
+    case 'm-genre-detail':
+      return { to: { name: 'genre-detail', params: { name: route.params.name } } }
     case 'm-radio':
       return { to: { name: 'radio' } }
     default:

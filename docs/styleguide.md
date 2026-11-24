@@ -564,6 +564,12 @@ picking, open on a tap instead. The desktop's "new artists" shelf is left
 out: those artists are not in the library, and every way to them leads out
 of the app.
 
+The phone's primary tabs are Home, Search, Explore, Your library and More.
+Search, Explore and Your library share `MobileCoverTile`'s square cover and
+two text lines; artists and stations use its round form. More holds the full
+Queue, Library and Playlists pages, so those lists keep their existing routes
+and state without taking a primary tab slot.
+
 A tile that is a link does not lift or move on hover; only what is inside
 it may answer the pointer (the Genres page's crates flip through their
 records). Tiles that rose on hover flickered under a pointer swept across a

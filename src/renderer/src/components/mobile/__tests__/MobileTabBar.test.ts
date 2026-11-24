@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createVuetify } from 'vuetify'
@@ -29,12 +29,12 @@ function stubMediaQueries({ standalone, touch }: { standalone: boolean; touch: b
   })) as unknown as typeof window.matchMedia
 }
 
-async function mountBar() {
+async function mountBar(path = '/m/library') {
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: [{ path: '/m/library', component: { template: '<div />' } }],
+    routes: [{ path: '/:pathMatch(.*)*', component: { template: '<div />' } }],
   })
-  await router.push('/m/library')
+  await router.push(path)
   await router.isReady()
   // Wrapped in a v-layout: the bar is a `v-bottom-navigation app`, which
   // registers itself with Vuetify's layout system and throws mounted on its
@@ -44,6 +44,42 @@ async function mountBar() {
     { global: { plugins: [vuetify, i18n, router] } },
   )
 }
+
+describe('mobile tab bar destinations', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    stubMediaQueries({ standalone: false, touch: false })
+  })
+
+  it('puts Search, Explore and Your library between Home and More', async () => {
+    const wrapper = await mountBar('/m/home')
+    const labels = wrapper.findAll('.mobile-tabbar .v-btn').map((button) => button.text().trim())
+
+    expect(labels).toEqual(['Home', 'Search', 'Explore', 'Your library', 'More'])
+  })
+
+  it.each([
+    ['/m/search', '/m/search'],
+    ['/m/explore', '/m/explore'],
+    ['/m/your-library', '/m/your-library'],
+    ['/m/queue', '/m/more'],
+    ['/m/library', '/m/more'],
+    ['/m/playlists', '/m/more'],
+  ])('selects the right tab on %s', async (path, selected) => {
+    const wrapper = await mountBar(path)
+
+    expect(wrapper.findComponent(MobileTabBar).vm.activeTab).toBe(selected)
+  })
+
+  it('follows a later route change into an overflow page', async () => {
+    const wrapper = await mountBar('/m/home')
+
+    await wrapper.vm.$router.push('/m/queue')
+    await flushPromises()
+
+    expect(wrapper.findComponent(MobileTabBar).vm.activeTab).toBe('/m/more')
+  })
+})
 
 describe('mobile tab bar gesture gap', () => {
   afterEach(() => {

@@ -35,6 +35,9 @@ describe('routeInOtherShell', () => {
   describe('into the desktop shell', () => {
     it.each([
       ['m-home', 'home'],
+      ['m-search', 'search'],
+      ['m-explore', 'home'],
+      ['m-your-library', 'songs'],
       ['m-now-playing', 'now-playing'],
       ['m-playlists', 'playlists'],
       ['m-radio', 'radio'],
@@ -51,6 +54,17 @@ describe('routeInOtherShell', () => {
       expect(landing(route('m-album-detail', { id: 'a1' }), false)).toMatchObject({
         name: 'album-detail',
         params: { id: 'a1' },
+      })
+      expect(landing(route('m-genre-detail', { name: 'Jazz' }), false)).toMatchObject({
+        name: 'genre-detail',
+        params: { name: 'Jazz' },
+      })
+    })
+
+    it('keeps the search term when changing shells', () => {
+      expect(landing(route('m-search', {}, { q: 'Miles' }), false)).toMatchObject({
+        name: 'search',
+        query: { q: 'Miles' },
       })
     })
 
@@ -80,6 +94,7 @@ describe('routeInOtherShell', () => {
   describe('into the phone shell', () => {
     it.each([
       ['home', 'm-home'],
+      ['search', 'm-search'],
       ['now-playing', 'm-now-playing'],
       ['playlists', 'm-playlists'],
       ['radio', 'm-radio'],
@@ -96,6 +111,17 @@ describe('routeInOtherShell', () => {
       expect(landing(route('album-detail', { id: 'a1' }), true)).toMatchObject({
         name: 'm-album-detail',
         params: { id: 'a1' },
+      })
+      expect(landing(route('genre-detail', { name: 'Jazz' }), true)).toMatchObject({
+        name: 'm-genre-detail',
+        params: { name: 'Jazz' },
+      })
+    })
+
+    it('keeps the search term when changing shells', () => {
+      expect(landing(route('search', {}, { q: 'Miles' }), true)).toMatchObject({
+        name: 'm-search',
+        query: { q: 'Miles' },
       })
     })
 
@@ -115,7 +141,7 @@ describe('routeInOtherShell', () => {
 
     /** No phone design for these; the phone shell shows them as they are,
      * the way it does when Now Playing links to an artist. */
-    it.each(['artists', 'artist-detail', 'genres', 'search', 'stats', 'settings'])(
+    it.each(['artists', 'artist-detail', 'genres', 'stats', 'settings'])(
       'leaves %s where it is',
       (name) => {
         expect(routeInOtherShell(route(name), true)).toBeNull()
@@ -130,12 +156,14 @@ describe('routeInOtherShell', () => {
   /** Turning a tablet back and forth must end up where it started. */
   it.each([
     route('m-home'),
+    route('m-search', {}, { q: 'Miles' }),
     route('m-now-playing'),
     route('m-playlists'),
     route('m-playlist-detail', { id: 'p1' }),
     route('m-library'),
     route('m-library', {}, { tab: 'albums' }),
     route('m-album-detail', { id: 'a1' }),
+    route('m-genre-detail', { name: 'Jazz' }),
     route('m-radio'),
     route('m-library', {}, { favorites: '1' }),
   ])('round-trips $name', (start) => {

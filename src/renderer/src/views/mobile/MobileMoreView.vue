@@ -4,6 +4,19 @@
       <h1 class="page-title mobile-header__title">{{ $t('mobile.tabMore') }}</h1>
     </div>
 
+    <!-- The full library pages moved here to make room for Search, Explore
+       - and Your library in the tab bar. -->
+    <v-list class="mobile-more__list" bg-color="transparent">
+      <v-list-item
+        v-for="item in browseItems"
+        :key="item.to"
+        :prepend-icon="item.icon"
+        :title="item.title"
+        append-icon="mdi-chevron-right"
+        :to="item.to"
+      />
+    </v-list>
+
     <!-- Music that is not in the library first, since it is still music;
        - then what is about this phone and this session. -->
     <v-list v-if="listenItems.length" class="mobile-more__list" bg-color="transparent">
@@ -62,11 +75,9 @@
 </template>
 
 <script lang="ts">
-// The phone's fifth tab: the pages worth reaching that are not one of the
-// four tabs for getting to music. It replaced the app bar's menu and the
-// Radio tab - radio and the external sources sit together here as the
-// music from outside the library, and the app bar is left to the current
-// view's own actions.
+// The phone's fifth tab: the full queue and library lists, music from
+// outside the library, and the pages about this phone and this session.
+// The app bar is left to the current view's own actions.
 import { useAuthStore } from '@/stores/auth'
 import { useExternalSourceStore } from '@/stores/externalSource'
 import { usePartyStore } from '@/stores/party'
@@ -88,6 +99,13 @@ export default {
      * counts them. */
     partyGuests(): number {
       return this.partyStore.hostedHere ? this.partyStore.connectedGuests : 0
+    },
+    browseItems(): { to: string; icon: string; title: string }[] {
+      return [
+        { to: '/m/queue', icon: 'mdi-playlist-music', title: this.$t('mobile.queue') },
+        { to: '/m/library', icon: 'mdi-music-note', title: this.$t('nav.library') },
+        { to: '/m/playlists', icon: 'mdi-playlist-play', title: this.$t('nav.playlists') },
+      ]
     },
     listenItems(): { to: string; icon: string; title: string }[] {
       const radio = this.authStore.capabilities.internetRadio

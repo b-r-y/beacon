@@ -153,6 +153,21 @@ const router = createRouter({
       component: () => import('../views/mobile/MobileHomeView.vue'),
     },
     {
+      path: '/m/search',
+      name: 'm-search',
+      component: () => import('../views/mobile/MobileSearchView.vue'),
+    },
+    {
+      path: '/m/explore',
+      name: 'm-explore',
+      component: () => import('../views/mobile/MobileExploreView.vue'),
+    },
+    {
+      path: '/m/your-library',
+      name: 'm-your-library',
+      component: () => import('../views/mobile/MobileYourLibraryView.vue'),
+    },
+    {
       path: '/m/now-playing',
       name: 'm-now-playing',
       component: () => import('../views/mobile/MobileNowPlayingView.vue'),
@@ -191,6 +206,12 @@ const router = createRouter({
       name: 'm-artist-detail',
       component: () => import('../views/mobile/MobileArtistDetailView.vue'),
     },
+    // Reached from a genre tile in Explore.
+    {
+      path: '/m/genres/:name',
+      name: 'm-genre-detail',
+      component: () => import('../views/mobile/MobileGenreDetailView.vue'),
+    },
     // The songs list grew an albums half and became the library (see
     // MobileLibraryView.vue), so the old path is kept as a redirect rather
     // than 404ing a bookmark or a link someone already has.
@@ -205,7 +226,7 @@ const router = createRouter({
       component: () => import('../views/mobile/MobileRadioView.vue'),
     },
     // Radio, the external sources, party, stats and settings: what is not
-    // one of the four tabs for getting to music.
+    // one of the four primary music tabs.
     {
       path: '/m/more',
       name: 'm-more',

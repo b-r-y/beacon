@@ -80,6 +80,11 @@ export default {
       type: Object as PropType<RadioStation>,
       required: true,
     },
+    /** Search results can start a station but do not own the station editor. */
+    showMenu: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['play', 'edit', 'delete'],
   data() {
@@ -90,7 +95,7 @@ export default {
       return usePlaybackStore()
     },
     canManage(): boolean {
-      return useAuthStore().capabilities.internetRadioManagement
+      return this.showMenu && useAuthStore().capabilities.internetRadioManagement
     },
     // Same three derivations RadioStationCard.vue makes, and for the same
     // reasons — see its own comments on matching by id and on preferring

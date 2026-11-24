@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
+- Phones have Search, Explore and Your library tabs: search music and radio with recent searches, browse playlists, albums, artists, songs, genres and stations, or bring playlists and favorites together in one sortable collection. Queue, the full Library and Playlists now live together under More
 - While casting to several speakers, the volume slider in the player bar moves all of them at once, on the desktop, on phones, in Remote Control and in Home Assistant. The cast menu sets whether it puts every speaker on the same level or keeps the balance between them; on the same level, a speaker you add joins at the level of the others (suggested and refined by [@b-r-y](https://github.com/b-r-y), [#97](https://github.com/mihaitom/beacon/discussions/97), [#98](https://github.com/mihaitom/beacon/pull/98))
 - Now Playing on the desktop can show a Milkdrop visualization in place of the background picture, with four presets made for Beacon. The Milky Way and Fractal Zoom presets can be sent straight to a place of your choice from the Milkdrop menu. You can upload your own `.milk` presets too, and party guests on a computer can switch Milkdrop on for themselves and pick a preset
 - A desktop app connected to a Beacon server shares the external sources with it: the server's show up as tabs in the desktop app, an administrator's desktop sends its own to the server, and their tokens only come along if you confirm it for that device

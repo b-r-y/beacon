@@ -1718,6 +1718,14 @@ export default {
   search: {
     noResultsHint: 'Prüf die Schreibweise oder versuch es mit weniger Wörtern.',
     label: 'Suche',
+    whatToListenTo: 'Wonach möchtest du hören?',
+    searchYourMusic: 'Deine Musik durchsuchen',
+    searchYourMusicHint:
+      'Finde Songs, Alben, Künstler und Playlists. Geöffnete Ergebnisse werden hier gemerkt.',
+    recentSearches: 'Letzte Suchen',
+    clearRecent: 'Alle löschen',
+    removeRecent: 'Aus letzten Suchen entfernen',
+    failed: 'Deine Bibliothek konnte nicht durchsucht werden. Bitte versuche es erneut.',
     resultsFor: 'Ergebnisse für „{query}“',
     artists: 'Künstler',
     albums: 'Alben',
@@ -1852,11 +1860,32 @@ export default {
     hours: '{hours} Std {minutes} Min',
     minutes: '{minutes} Min',
   },
+  explore: {
+    sortRecent: 'Zuletzt',
+    sortNewest: 'Zuletzt hinzugefügt',
+    sortAlphabetical: 'Alphabetisch',
+    sortMostPlayed: 'Am häufigsten gespielt',
+    sortShuffle: 'Zufällig',
+    loadFailed: 'Dieser Abschnitt konnte nicht geladen werden. Bitte versuche es erneut.',
+    emptyTitle: 'Nichts anzuzeigen',
+    emptyHint: 'Versuche eine andere Suche oder einen anderen Abschnitt.',
+    playAll: 'Alle abspielen',
+    shuffleAll: 'Alle mischen',
+  },
+  yourLibrary: {
+    emptyTitle: 'Hier ist noch nichts',
+    emptyHint: 'Playlists und Favoriten erscheinen hier.',
+    loadFailed: 'Deine Bibliothek konnte nicht geladen werden. Bitte versuche es erneut.',
+  },
   mobile: {
+    queue: 'Warteschlange',
     // Nicht "Warteschlange" wie überall sonst: ein Fünftel der Tab-Leiste
     // ist auf einem 320px-Display 60px breit, das Wort braucht 95px und
     // stünde dort dauerhaft abgeschnitten.
     tabQueue: 'Nächste',
+    tabSearch: 'Suche',
+    tabExplore: 'Entdecken',
+    tabYourLibrary: 'Deine Bibliothek',
     tabMore: 'Mehr',
     playOn: 'Wiedergeben auf',
     needsPairing: 'Muss zuerst in der Beacon-App gepairt werden',

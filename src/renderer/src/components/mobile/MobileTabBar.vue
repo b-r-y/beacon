@@ -64,6 +64,11 @@ const AT_SCREEN_EDGE =
  * and fail silently to "never matches" wherever that is not understood. */
 const TOUCH_INPUT = '(pointer: coarse)'
 
+/** These pages are reached through More now, so More stays selected while
+ *  one of them is open. Detail pages deliberately keep the no-selection
+ *  behaviour: an album is not a tab. */
+const MORE_PATHS = new Set(['/m/more', '/m/queue', '/m/library', '/m/playlists'])
+
 export default {
   name: 'MobileTabBar',
   props: {
@@ -90,22 +95,23 @@ export default {
     items() {
       return [
         // No Now Playing tab: the player bar above this one already leads
-        // there whenever there is anything to show. Home first, as the
-        // start; the queue next to it as the tab about what is playing;
-        // then the library (favourites are its heart filter) and what is
-        // picked out of it. Everything else - radio, the external sources,
-        // party, stats, settings - waits behind More, which is always
-        // there, so the bar no longer changes with what a server can do.
+        // there whenever there is anything to show. The four music
+        // destinations come first; the queue, full library lists and
+        // playlists wait behind More with radio and the other utilities.
         { to: '/m/home', icon: 'mdi-home-variant', label: this.$t('nav.home') },
-        { to: '/m/queue', icon: 'mdi-playlist-music', label: this.$t('mobile.tabQueue') },
-        { to: '/m/library', icon: 'mdi-music-note', label: this.$t('nav.library') },
-        { to: '/m/playlists', icon: 'mdi-playlist-play', label: this.$t('nav.playlists') },
+        { to: '/m/search', icon: 'mdi-magnify', label: this.$t('mobile.tabSearch') },
+        { to: '/m/explore', icon: 'mdi-compass-outline', label: this.$t('mobile.tabExplore') },
+        {
+          to: '/m/your-library',
+          icon: 'mdi-library-outline',
+          label: this.$t('mobile.tabYourLibrary'),
+        },
         { to: '/m/more', icon: 'mdi-dots-horizontal', label: this.$t('mobile.tabMore') },
       ]
     },
-    /** Which tab is lit, or null on a sub-page like /m/albums/:id - only
-     * the exact tab routes light up, rather than guessing which parent tab
-     * a sub-page "belongs" to.
+    /** Which tab is lit, or null on a sub-page like /m/albums/:id. The
+     * pages moved behind More keep it selected; other sub-pages do not
+     * guess a parent tab.
      *
      * Bound as the group's own v-model rather than as each button's
      * `active`: VBtn takes the `v-btn--active` class from `active` but its
@@ -118,6 +124,7 @@ export default {
      * back to its own default. */
     activeTab(): string | null {
       const path = this.$route.path
+      if (MORE_PATHS.has(path)) return '/m/more'
       return this.items.some((item) => item.to === path) ? path : null
     },
   },
@@ -152,8 +159,8 @@ export default {
 /* Vuetify gives each button a min-width of 80px and `grow` only ever
  * stretches them, never shrinks. Five tabs are 400px, which is wider than
  * every common phone: the row centred itself and hung 5px off each end at
- * 390px, more on a narrower screen, so the last tab (Radio) was the one
- * with a slice missing and a shrunken touch target. Sharing the bar
+ * 390px, more on a narrower screen, so the last tab was the one with a
+ * slice missing and a shrunken touch target. Sharing the bar
  * equally instead is what `grow` reads as anyway. */
 .mobile-tabbar :deep(.v-btn) {
   min-width: 0;

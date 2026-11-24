@@ -1,5 +1,5 @@
-// The phone's More tab: radio and the external sources, party, stats and
-// settings.
+// The phone's More tab: queue and full library pages, radio and external
+// sources, party, stats and settings.
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
@@ -37,6 +37,13 @@ async function mountView() {
 describe('MobileMoreView', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+  })
+
+  it('keeps Queue, Library and Playlists reachable before the other music', async () => {
+    const { wrapper } = await mountView()
+    const links = wrapper.findAll('a.v-list-item').map((link) => link.attributes('href'))
+
+    expect(links.slice(0, 3)).toEqual(['/m/queue', '/m/library', '/m/playlists'])
   })
 
   it('leads to Radio only on a server that has it', async () => {

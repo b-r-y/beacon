@@ -22,7 +22,10 @@ const wrappers: VueWrapper[] = []
 
 // v-bottom-navigation needs v-app's layout injection, so this mounts the
 // shell rather than the bar on its own.
-function mountShell(push: () => void, route = reactive({ path: '/m/library', name: 'm-library' })) {
+function mountShell(
+  push: () => void,
+  route = reactive({ path: '/m/your-library', name: 'm-your-library' }),
+) {
   const wrapper = mount(MobileLayout, {
     attachTo: document.body,
     global: {
@@ -83,10 +86,8 @@ describe('mobile tab bar', () => {
   /** A label longer than its own fifth of the bar used to overflow the
    * button and be clipped mid-word at both ends, because the span's
    * `max-width: 100%` resolved against Vuetify's .v-btn__content, which has
-   * no width of its own. French is the shipped language that shows it
-   * ("File d'attente", "Lecture en cours"); German lost its long one when
-   * the queue tab was shortened, which is exactly why this is pinned to a
-   * language rather than to whatever the default one says today. */
+   * no width of its own. French and German show it with "Votre
+   * bibliothèque" and "Deine Bibliothek". */
   it.each([320, 390])('keeps a long label inside its own tab at %ipx', async (width) => {
     await page.viewport(width, 844)
     setActivePinia(createPinia())
@@ -186,11 +187,11 @@ describe('mobile tab bar', () => {
   it('follows the route rather than the last tab tapped', async () => {
     await page.viewport(390, 844)
     setActivePinia(createPinia())
-    const route = reactive({ path: '/m/library', name: 'm-library' })
+    const route = reactive({ path: '/m/your-library', name: 'm-your-library' })
     const wrapper = mountShell(vi.fn(), route)
     await new Promise((resolve) => setTimeout(resolve, 80))
 
-    const tabs = ['/m/home', '/m/queue', '/m/library', '/m/playlists', '/m/more']
+    const tabs = ['/m/home', '/m/search', '/m/explore', '/m/your-library', '/m/more']
     /** The one tab rendered in a colour no other tab has, or -1 when they
      * all match and nothing is picked out. */
     const litTab = () => {
@@ -202,7 +203,7 @@ describe('mobile tab bar', () => {
       return colours.findIndex((colour) => tally.get(colour) === 1)
     }
 
-    expect(tabs[litTab()], 'the open tab is not picked out at all').toBe('/m/library')
+    expect(tabs[litTab()], 'the open tab is not picked out at all').toBe('/m/your-library')
 
     // What tapping the mini player does: Now Playing has no tab of its own.
     route.path = '/m/now-playing'
@@ -214,6 +215,11 @@ describe('mobile tab bar', () => {
     route.name = 'm-home'
     await settled()
     expect(tabs[litTab()], 'the open tab is not picked out at all').toBe('/m/home')
+
+    route.path = '/m/queue'
+    route.name = 'm-queue'
+    await settled()
+    expect(tabs[litTab()], 'a page moved behind More does not select it').toBe('/m/more')
 
     // ...and what tapping the album cover on Now Playing does.
     route.path = '/m/albums/42'
